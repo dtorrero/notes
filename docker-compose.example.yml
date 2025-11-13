@@ -1,19 +1,33 @@
+# Example docker-compose.yml using pre-built image from GitHub Container Registry
+# 
+# INSTRUCTIONS:
+# 1. Repository: dtorrero/notes (public)
+# 2. Run: docker-compose -f docker-compose.example.yml up -d
+# 3. Access: http://localhost:3000
+#
+# For local builds, use the main docker-compose.yml instead
+
 version: '3.8'
 
 services:
   notes-app:
-    build: .
-    # Uncomment the line below to use pre-built image instead:
-    # image: ghcr.io/dtorrero/notes:latest
+    image: ghcr.io/dtorrero/notes:latest
+    
     container_name: simple-notes-app
+    
     ports:
       - "3000:3000"
+    
     volumes:
+      # Persistent storage for notes
       - ./data:/app/data
+    
     environment:
       - PORT=3000
       - NODE_ENV=production
+    
     restart: unless-stopped
+    
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s

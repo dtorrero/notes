@@ -45,7 +45,7 @@ docker run -d \
 
 3. Open your browser to: `http://localhost:3000`
 
-### Option 3: Run with Docker Compose
+### Option 3: Run with Docker Compose (Local Build)
 
 1. Start the application:
 ```bash
@@ -64,19 +64,43 @@ docker-compose logs -f
 docker-compose down
 ```
 
-### Option 4: Use Pre-built Multi-Architecture Images
+### Option 4: Run with Docker Compose (Pre-built Image)
 
-Pull and run pre-built images from GitHub Container Registry (supports amd64, arm64, arm/v7):
+**Copy-paste ready!** Use the pre-built multi-architecture image from GitHub Container Registry:
 
-```bash
-docker run -d \
-  -p 3000:3000 \
-  -v $(pwd)/data:/app/data \
-  --name notes-app \
-  ghcr.io/YOUR_USERNAME/notes:latest
+1. Create a `docker-compose.yml` file:
+```yaml
+version: '3.8'
+
+services:
+  notes-app:
+    image: ghcr.io/YOUR_USERNAME/notes:latest
+    container_name: simple-notes-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    restart: unless-stopped
 ```
 
-> **Note**: Replace `YOUR_USERNAME` with your GitHub username after pushing to GitHub.
+2. Replace `YOUR_USERNAME` with your GitHub username
+
+3. If the repository is private, login first:
+```bash
+docker login ghcr.io -u YOUR_USERNAME
+```
+
+4. Start the application:
+```bash
+docker-compose up -d
+```
+
+5. Open your browser to: `http://localhost:3000`
+
+> **Note**: The image supports amd64, arm64, and arm/v7 architectures automatically.
 
 ## Multi-Architecture Support
 
